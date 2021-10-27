@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>HW1 web</title>
+    <body>
+        <h2>please enter the text below:</h2>
+        <textarea name="textarea" id="textarea2" cols="30" rows="1", minlength="8">
+        </textarea>
+        <button type="button" id="submitButton">
+            submit to go
+        </button>
+        <button type="button" id="checkButton">
+            check from go
+        </button>
+    <script>
+        $(document).ready(function(){
+        
+            $("#submitButton").click(function(){
+                var val = $("#textarea2").val()
+           
+            $.ajax({
+                url : 'http://localhost:3000/node/sha256',
+                type : 'POST',
+                data : JSON.stringify({"data": String(val)}),
+                contenttype : 'application/json',
+                success: function(data){
+                    response = data.message
+                    alert("sha256 of your message is " + response)
+
+                },
+                error: function(err){
+                    console.log(err)
+				
+                }
+
+            })
+            //$.post("https://google.com", val, test)
+            });
+
+            $("#checkButton").click(function(){
+                var val = $("#textarea2").val()
+                let url = 'http://localhost:3000/node/sha256/' + val
+                $.ajax({
+                    url : url,
+                    type : 'GET',
+                    success : function(data){
+                        hash = data.message
+                    },
+                    error : function(err){
+                        alert(err.responseJSON.message)
+                    }
+                    
+                })
+            })
+        
+            
+        });
+        function test(){
+            window.open("http://yahoo.com")
+        }
+    </script>
+    </body>
+</html>

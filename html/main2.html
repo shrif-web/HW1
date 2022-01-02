@@ -4,20 +4,66 @@
     <meta charset="UTF-8">
     <title>HW1 web</title>
     <body>
-        <h2>please enter the text below:</h2>
-        <textarea name="textarea" id="textarea2" cols="30" rows="1", minlength="8">
+        <h2>please enter the text below for submitting:</h2>
+        <textarea name="textarea" id="textareaSubmit" cols="30" rows="1", minlength="8">
         </textarea>
-        <button type="button" id="submitButton">
+        <button type="button" id="submitButtonGo">
             submit to go
         </button>
-        <button type="button" id="checkButton">
+        <button type="button" id="submitButtonNode">
+            submit to node
+        </button>
+        <h2>please enter the text below for checking:</h2>
+        <textarea name="textarea2" id="textareaCheck" cols="30" rows="1", minlength="8">
+        </textarea>
+        <button type="button" id="checkButtonGo">
             check from go
+        </button>
+        <button type="button" id="checkButtonNode">
+            check from node
         </button>
     <script>
         $(document).ready(function(){
         
-            $("#submitButton").click(function(){
-                var val = $("#textarea2").val()
+            $("#submitButtonGo").click(function(){
+                var val = $("#textareaSubmit").val()
+           
+            $.ajax({
+                url : 'http://localhost:3000/go/sha256',
+                type : 'POST',
+                data : JSON.stringify({"data": String(val)}),
+                contenttype : 'application/json',
+                success: function(data){
+                    response = data.message
+                    alert("sha256 of your message is " + response)
+
+                },
+                error: function(err){
+                    alert(err.message)
+				
+                }
+            })
+            });
+
+            $("#checkButtonGo").click(function(){
+                var val = $("#textareaCheck").val()
+                let url = 'http://localhost:3000/go/sha256/' + val
+                $.ajax({
+                    url : url,
+                    type : 'GET',
+                    success : function(data){
+                        hash = data.message
+                        alert("real message is " + hash)
+                    },
+                    error : function(err){
+                        alert(err.responseJSON.message)
+                    }
+                    
+                })
+            }) 
+
+            $("#submitButtonNode").click(function(){
+                var val = $("#textareaSubmit").val()
            
             $.ajax({
                 url : 'http://localhost:3000/node/sha256',
@@ -31,29 +77,27 @@
                 },
                 error: function(err){
                     console.log(err)
-				
                 }
 
             })
             });
 
-            $("#checkButton").click(function(){
-                var val = $("#textarea2").val()
+            $("#checkButtonNode").click(function(){
+                var val = $("#textareaCheck").val()
                 let url = 'http://localhost:3000/node/sha256/' + val
                 $.ajax({
                     url : url,
                     type : 'GET',
                     success : function(data){
                         hash = data.message
+                        alert("real message is " + hash)
                     },
                     error : function(err){
                         alert(err.responseJSON.message)
                     }
                     
                 })
-            })
-        
-            
+            }) 
         });
     </script>
     </body>
